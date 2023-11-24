@@ -1,25 +1,18 @@
 import socket
 import json
 
-class UDP:
-    def __init__(
-        self,
-        rx_addr=("0.0.0.0", 8000),
-        tx_addr=("0.0.0.0", 8001),
-    ):
-        self.rx_addr = rx_addr
-        self.tx_addr = tx_addr
-        
-        # self.sending_freq = 2000.0
-        self.tx_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        print("UDP Sender is initialized:", self.tx_addr)
 
-        self.rx_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.rx_sock.bind(self.rx_addr)
-        print("UDP Receiver is initialized:", self.rx_addr)
+class UDPRx:
+    def __init__(self, addr=("0.0.0.0", 8000)):
+        self.addr = addr
+        
+        self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        
+        self._sock.bind(self.addr)
+        print("UDP Rx is initialized:", self.addr)
 
     def stop(self):
-        self.rx_sock.close()
+        self._sock.close()
 
     """
     Receive data
@@ -31,12 +24,24 @@ class UDP:
     @param timeout: timeout in seconds
     """
     def recv(self, buffer_size=1024, timeout=None):
-        self.rx_sock.settimeout(timeout)
+        self._sock.settimeout(timeout)
         try:
-            buffer, addr = self.rx_sock.recvfrom(buffer_size)
+            buffer, addr = self._sock.recvfrom(buffer_size)
         except (socket.timeout, BlockingIOError):
             return None
         return buffer
+
+
+class UDPTx:
+    def __init__(self, target_addr=("0.0.0.0", 8000)):
+        self.target_addr = target_addr
+        
+        self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        
+        print("UDP Tx is initialized:", self.target_addr)
+
+    def stop(self):
+        self._sock.close()
 
     def sendDict(self, data):
         buffer = json.dumps(data)
@@ -44,4 +49,6 @@ class UDP:
         self.send(buffer)
 
     def send(self, buffer):
-        self.tx_sock.sendto(buffer, self.tx_addr)
+        self._sock.sendto(buffer, self.target_addr)
+
+
