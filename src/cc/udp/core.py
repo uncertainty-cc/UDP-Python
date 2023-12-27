@@ -3,6 +3,9 @@ import json
 
 
 class UDPRx:
+    """
+    @param addr: address to listen on
+    """
     def __init__(self, addr=("0.0.0.0", 8000)):
         self.addr = addr
         
@@ -33,12 +36,15 @@ class UDPRx:
 
 
 class UDPTx:
-    def __init__(self, target_addr=("0.0.0.0", 8000)):
-        self.target_addr = target_addr
+    """
+    @param addr: address of target host
+    """
+    def __init__(self, addr=("0.0.0.0", 8000)):
+        self.addr = addr
         
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
-        print("UDP Tx is initialized:", self.target_addr)
+        print("UDP Tx is initialized:", self.addr)
 
     def stop(self):
         self._sock.close()
@@ -49,6 +55,6 @@ class UDPTx:
         self.send(buffer)
 
     def send(self, buffer):
-        self._sock.sendto(buffer, self.target_addr)
+        self._sock.sendto(buffer, self.addr)
 
 
