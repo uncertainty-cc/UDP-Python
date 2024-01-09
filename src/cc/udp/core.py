@@ -70,8 +70,8 @@ class UDP:
         self.tx._sock.settimeout(0.1)
         self.rx._sock.settimeout(0.1)
     
-    def recvDict(self):
-        buffer = self.rx.recv()
+    def recvDict(self, timeout=None):
+        buffer = self.rx.recv(timeout=timeout)
         if not buffer:
             return None
         serialized_data = buffer.decode("utf-8")
