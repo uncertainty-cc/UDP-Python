@@ -4,7 +4,8 @@ import json
 
 class UDPRx:
     """
-    @param addr: address to listen on
+    Args:
+        addr: address to listen on
     """
     def __init__(self, addr=("0.0.0.0", 8000)):
         self.addr = addr
@@ -24,7 +25,9 @@ class UDPRx:
     timeout == 0: non-blocking (the actual delay is around 0.1s)
     timeout > 0: blocking for timeout seconds
 
-    @param timeout: timeout in seconds
+    Args:
+        buffer_size: size of data to receive
+        timeout: timeout in seconds
     """
     def recv(self, buffer_size=1024, timeout=None):
         self._sock.settimeout(timeout)
@@ -37,7 +40,8 @@ class UDPRx:
 
 class UDPTx:
     """
-    @param addr: address of target host
+    Args:
+        addr: address of target host
     """
     def __init__(self, addr=("0.0.0.0", 8000)):
         self.addr = addr
@@ -56,5 +60,27 @@ class UDPTx:
 
     def send(self, buffer):
         self._sock.sendto(buffer, self.addr)
+
+
+class UDP:
+    def __init__(self, recv_addr, send_addr):
+        self.tx = UDPTx(send_addr)
+        self.rx = UDPRx(recv_addr)
+
+        self.tx._sock.settimeout(0.1)
+        self.rx._sock.settimeout(0.1)
+    
+    def recvDict(self):
+        buffer = self.rx.recv()
+        if not buffer:
+            return None
+        serialized_data = buffer.decode("utf-8")
+        data = json.loads(serialized_data)
+        return data
+    
+    def sendDict(self, data: dict):
+        serialized_data = json.dumps(data)
+        buffer = serialized_data.encode("utf-8")
+        self.tx.send(buffer)
 
 
