@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="cc.udp",
-    version="2024.1.8",
+    version="2024.1.22",
     author="Uncertainty.",
     author_email="t_k_233@outlook.email",
     description="UDP helper function for robotics workload.",

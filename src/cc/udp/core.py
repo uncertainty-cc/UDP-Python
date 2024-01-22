@@ -1,6 +1,7 @@
 import socket
 import json
 
+import numpy as np
 
 class UDPRx:
     """
@@ -81,6 +82,17 @@ class UDP:
     def sendDict(self, data: dict):
         serialized_data = json.dumps(data)
         buffer = serialized_data.encode("utf-8")
+        self.tx.send(buffer)
+
+    def recvNp(self, dtype=np.float32, timeout=None):
+        buffer = self.rx.recv(timeout=timeout)
+        if not buffer:
+            return None
+        data = np.frombuffer(buffer, dtype=dtype)
+        return data
+    
+    def sendNp(self, data: np.ndarray):
+        buffer = data.tobytes()
         self.tx.send(buffer)
 
 
