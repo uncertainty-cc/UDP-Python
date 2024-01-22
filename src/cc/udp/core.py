@@ -19,7 +19,7 @@ class UDPRx:
     def stop(self):
         self._sock.close()
 
-    def recv(self, buffer_size=1024, timeout=None) -> bytes:
+    def recv(self, bufsize=1024, timeout=None) -> bytes:
         """
         Receive data
 
@@ -28,26 +28,26 @@ class UDPRx:
         timeout > 0: blocking for timeout seconds
 
         Args:
-            buffer_size: size of data to receive
+            bufsize: size of data buffer to receive
             timeout: timeout in seconds
         """
         self._sock.settimeout(timeout)
         try:
-            buffer, addr = self._sock.recvfrom(buffer_size)
+            buffer, addr = self._sock.recvfrom(bufsize)
         except (socket.timeout, BlockingIOError):
             return None
         return buffer
 
-    def recvDict(self, timeout=None) -> dict:
-        buffer = self.recv(timeout=timeout)
+    def recvDict(self, bufsize=1024, timeout=None) -> dict:
+        buffer = self.recv(bufsize=bufsize, timeout=timeout)
         if not buffer:
             return None
         serialized_data = buffer.decode("utf-8")
         data = json.loads(serialized_data)
         return data
     
-    def recvNumpy(self, dtype=np.float32, timeout=None) -> np.ndarray:
-        buffer = self.rx.recv(timeout=timeout)
+    def recvNumpy(self, bufsize=1024, dtype=np.float32, timeout=None) -> np.ndarray:
+        buffer = self.recv(bufsize=bufsize, timeout=timeout)
         if not buffer:
             return None
         data = np.frombuffer(buffer, dtype=dtype)
@@ -79,7 +79,7 @@ class UDPTx:
 
     def sendNumpy(self, data: np.ndarray):
         buffer = data.tobytes()
-        self.tx.send(buffer)
+        self.send(buffer)
 
 
 class UDP:
