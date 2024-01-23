@@ -3,9 +3,15 @@ import json
 
 import numpy as np
 
+
 class UDPRx:
+    """
+    UDP Rx class for receiving data from a UDP socket.
+    """
     def __init__(self, addr=("0.0.0.0", 8000)):
         """
+        Initialize UDP Rx
+
         Args:
             addr: address to listen on
         """
@@ -17,6 +23,9 @@ class UDPRx:
         print("UDP Rx is initialized:", self.addr)
 
     def stop(self):
+        """
+        Close the socket.
+        """
         self._sock.close()
 
     def recv(self, bufsize=1024, timeout=None) -> bytes:
@@ -39,6 +48,15 @@ class UDPRx:
         return buffer
 
     def recvDict(self, bufsize=1024, timeout=None) -> dict:
+        """
+        Receive data and deserialize it into a python dictionary.
+
+        See `recv()` for more information on timeout.
+
+        Args:
+            bufsize: size of data buffer to receive
+            timeout: timeout in seconds
+        """
         buffer = self.recv(bufsize=bufsize, timeout=timeout)
         if not buffer:
             return None
@@ -47,6 +65,16 @@ class UDPRx:
         return data
     
     def recvNumpy(self, bufsize=1024, dtype=np.float32, timeout=None) -> np.ndarray:
+        """
+        Receive data and deserialize it into a numpy array.
+        
+        See `recv()` for more information on timeout.
+        
+        Args:
+            bufsize: size of data buffer to receive
+            dtype: numpy data type
+            timeout: timeout in seconds
+        """
         buffer = self.recv(bufsize=bufsize, timeout=timeout)
         if not buffer:
             return None
@@ -55,8 +83,13 @@ class UDPRx:
 
 
 class UDPTx:
+    """
+    UDP Tx class for sending data to a UDP socket.
+    """
     def __init__(self, addr=("0.0.0.0", 8000)):
         """
+        Initialize UDP Tx
+
         Args:
             addr: address of target host
         """
@@ -67,40 +100,99 @@ class UDPTx:
         print("UDP Tx is initialized:", self.addr)
 
     def stop(self):
+        """
+        Close the socket.
+        """
         self._sock.close()
 
     def send(self, buffer):
+        """
+        Send data
+        
+        Args:
+            buffer: data to send
+        """
         self._sock.sendto(buffer, self.addr)
 
     def sendDict(self, data: dict):
+        """
+        Serialize a python dictionary and send it.
+        
+        Args:
+            data: data to send
+        """
         buffer = json.dumps(data)
         buffer = buffer.encode()
         self.send(buffer)
 
     def sendNumpy(self, data: np.ndarray):
+        """
+        Serialize a numpy array and send it.
+        
+        Args:
+            data: data to send
+        """
         buffer = data.tobytes()
         self.send(buffer)
 
 
 class UDP:
+    """
+    UDP class for sending and receiving data from a UDP socket.
+    """
     def __init__(self, recv_addr, send_addr):
+        """
+        Initialize UDP Tx and Rx
+        
+        Args:
+            recv_addr: address to listen on
+            send_addr: address of target host
+        """
         self.tx = UDPTx(send_addr)
         self.rx = UDPRx(recv_addr)
 
         self.tx._sock.settimeout(0.1)
         self.rx._sock.settimeout(0.1)
     
-    def recvDict(self, timeout=None) -> dict:
-        return self.rx.recvDict(timeout)
+    def recvDict(self, bufsize=1024, timeout=None) -> dict:
+        """
+        Receive data and deserialize it into a python dictionary.
+        
+        See `recv()` for more information on timeout.
+        
+        Args:
+            bufsize: size of data buffer to receive
+            timeout: timeout in seconds
+        """
+        return self.rx.recvDict(bufsize=bufsize, timeout=timeout)
     
     def sendDict(self, data: dict):
+        """
+        Serialize a python dictionary and send it.
+        
+        Args:
+            data: data to send
+        """
         self.tx.sendDict(data)
 
-    def recvNumpy(self, dtype=np.float32, timeout=None) -> np.ndarray:
-        self.rx.recvNumpy(dtype, timeout)
+    def recvNumpy(self, bufsize=1024, dtype=np.float32, timeout=None) -> np.ndarray:
+        """
+        Receive data and deserialize it into a numpy array.
+        
+        See `recv()` for more information on timeout.
+        
+        Args:
+            bufsize: size of data buffer to receive
+            dtype: numpy data type
+            timeout: timeout in seconds
+        """
+        return self.rx.recvNumpy(bufsize=bufsize, dtype=dtype, timeout=timeout)
 
     def sendNumpy(self, data: np.ndarray):
+        """
+        Serialize a numpy array and send it.
+        
+        Args:
+            data: data to send
+        """
         self.tx.sendNumpy(data)
-    
-
-
