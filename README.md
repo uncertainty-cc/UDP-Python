@@ -1,1 +1,3 @@
-# UDP-Python
+# cc.UDP
+
+![API-Docs-status](https://img.shields.io/github/actions/workflow/status/uncertainty-cc/UDP-Python/build-docs.yaml?branch=main&style=flat-square&label=Docs&logo=googledocs&logoColor=fff)
