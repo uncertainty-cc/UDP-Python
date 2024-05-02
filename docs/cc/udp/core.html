@@ -84,24 +84,6 @@
                         <li>
                                 <a class="function" href="#UDP.__init__">UDP</a>
                         </li>
-                        <li>
-                                <a class="variable" href="#UDP.tx">tx</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#UDP.rx">rx</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#UDP.recvDict">recvDict</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#UDP.sendDict">sendDict</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#UDP.recvNumpy">recvNumpy</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#UDP.sendNumpy">sendNumpy</a>
-                        </li>
                 </ul>
 
             </li>
@@ -264,7 +246,7 @@ cc<wbr>.<a href="./../udp.html">udp</a><wbr>.core    </h1>
 </span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
 </span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>
 </span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="k">class</span> <span class="nc">UDP</span><span class="p">:</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="k">class</span> <span class="nc">UDP</span><span class="p">(</span><span class="n">UDPTx</span><span class="p">,</span> <span class="n">UDPRx</span><span class="p">):</span>
 </span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a><span class="sd">    UDP class for sending and receiving data from a UDP socket.</span>
 </span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="sd">    &quot;&quot;&quot;</span>
@@ -276,54 +258,8 @@ cc<wbr>.<a href="./../udp.html">udp</a><wbr>.core    </h1>
 </span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a><span class="sd">            recv_addr: address to listen on</span>
 </span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a><span class="sd">            send_addr: address of target host</span>
 </span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span> <span class="o">=</span> <span class="n">UDPTx</span><span class="p">(</span><span class="n">send_addr</span><span class="p">)</span>
-</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rx</span> <span class="o">=</span> <span class="n">UDPRx</span><span class="p">(</span><span class="n">recv_addr</span><span class="p">)</span>
-</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>
-</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">_sock</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rx</span><span class="o">.</span><span class="n">_sock</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>    
-</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">recvDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bufsize</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a><span class="sd">        Receive data and deserialize it into a python dictionary.</span>
-</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a><span class="sd">        </span>
-</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a><span class="sd">        See `recv()` for more information on timeout.</span>
-</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a><span class="sd">        </span>
-</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a><span class="sd">        Args:</span>
-</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a><span class="sd">            bufsize: size of data buffer to receive</span>
-</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a><span class="sd">            timeout: timeout in seconds</span>
-</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rx</span><span class="o">.</span><span class="n">recvDict</span><span class="p">(</span><span class="n">bufsize</span><span class="o">=</span><span class="n">bufsize</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
-</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>    
-</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>    <span class="k">def</span> <span class="nf">sendDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a><span class="sd">        Serialize a python dictionary and send it.</span>
-</span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a><span class="sd">        </span>
-</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a><span class="sd">        Args:</span>
-</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a><span class="sd">            data: data to send</span>
-</span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">sendDict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>
-</span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a>    <span class="k">def</span> <span class="nf">recvNumpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bufsize</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a><span class="sd">        Receive data and deserialize it into a numpy array.</span>
-</span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a><span class="sd">        </span>
-</span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a><span class="sd">        See `recv()` for more information on timeout.</span>
-</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a><span class="sd">        </span>
-</span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a><span class="sd">        Args:</span>
-</span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a><span class="sd">            bufsize: size of data buffer to receive</span>
-</span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a><span class="sd">            dtype: numpy data type</span>
-</span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a><span class="sd">            timeout: timeout in seconds</span>
-</span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rx</span><span class="o">.</span><span class="n">recvNumpy</span><span class="p">(</span><span class="n">bufsize</span><span class="o">=</span><span class="n">bufsize</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
-</span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>
-</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>    <span class="k">def</span> <span class="nf">sendNumpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-</span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a><span class="sd">        Serialize a numpy array and send it.</span>
-</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a><span class="sd">        </span>
-</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a><span class="sd">        Args:</span>
-</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a><span class="sd">            data: data to send</span>
-</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">sendNumpy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>        <span class="n">UDPRx</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="n">recv_addr</span><span class="p">)</span>
+</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>        <span class="n">UDPTx</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="n">send_addr</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -881,13 +817,13 @@ timeout &gt; 0: blocking for timeout seconds</p>
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">UDP</span>:
+    <span class="name">UDP</span><wbr>(<span class="base"><a href="#UDPTx">UDPTx</a></span>, <span class="base"><a href="#UDPRx">UDPRx</a></span>):
 
                 <label class="view-source-button" for="UDP-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#UDP"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="UDP-140"><a href="#UDP-140"><span class="linenos">140</span></a><span class="k">class</span> <span class="nc">UDP</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="UDP-140"><a href="#UDP-140"><span class="linenos">140</span></a><span class="k">class</span> <span class="nc">UDP</span><span class="p">(</span><span class="n">UDPTx</span><span class="p">,</span> <span class="n">UDPRx</span><span class="p">):</span>
 </span><span id="UDP-141"><a href="#UDP-141"><span class="linenos">141</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="UDP-142"><a href="#UDP-142"><span class="linenos">142</span></a><span class="sd">    UDP class for sending and receiving data from a UDP socket.</span>
 </span><span id="UDP-143"><a href="#UDP-143"><span class="linenos">143</span></a><span class="sd">    &quot;&quot;&quot;</span>
@@ -899,54 +835,8 @@ timeout &gt; 0: blocking for timeout seconds</p>
 </span><span id="UDP-149"><a href="#UDP-149"><span class="linenos">149</span></a><span class="sd">            recv_addr: address to listen on</span>
 </span><span id="UDP-150"><a href="#UDP-150"><span class="linenos">150</span></a><span class="sd">            send_addr: address of target host</span>
 </span><span id="UDP-151"><a href="#UDP-151"><span class="linenos">151</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="UDP-152"><a href="#UDP-152"><span class="linenos">152</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span> <span class="o">=</span> <span class="n">UDPTx</span><span class="p">(</span><span class="n">send_addr</span><span class="p">)</span>
-</span><span id="UDP-153"><a href="#UDP-153"><span class="linenos">153</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rx</span> <span class="o">=</span> <span class="n">UDPRx</span><span class="p">(</span><span class="n">recv_addr</span><span class="p">)</span>
-</span><span id="UDP-154"><a href="#UDP-154"><span class="linenos">154</span></a>
-</span><span id="UDP-155"><a href="#UDP-155"><span class="linenos">155</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">_sock</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-</span><span id="UDP-156"><a href="#UDP-156"><span class="linenos">156</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rx</span><span class="o">.</span><span class="n">_sock</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-</span><span id="UDP-157"><a href="#UDP-157"><span class="linenos">157</span></a>    
-</span><span id="UDP-158"><a href="#UDP-158"><span class="linenos">158</span></a>    <span class="k">def</span> <span class="nf">recvDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bufsize</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="UDP-159"><a href="#UDP-159"><span class="linenos">159</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="UDP-160"><a href="#UDP-160"><span class="linenos">160</span></a><span class="sd">        Receive data and deserialize it into a python dictionary.</span>
-</span><span id="UDP-161"><a href="#UDP-161"><span class="linenos">161</span></a><span class="sd">        </span>
-</span><span id="UDP-162"><a href="#UDP-162"><span class="linenos">162</span></a><span class="sd">        See `recv()` for more information on timeout.</span>
-</span><span id="UDP-163"><a href="#UDP-163"><span class="linenos">163</span></a><span class="sd">        </span>
-</span><span id="UDP-164"><a href="#UDP-164"><span class="linenos">164</span></a><span class="sd">        Args:</span>
-</span><span id="UDP-165"><a href="#UDP-165"><span class="linenos">165</span></a><span class="sd">            bufsize: size of data buffer to receive</span>
-</span><span id="UDP-166"><a href="#UDP-166"><span class="linenos">166</span></a><span class="sd">            timeout: timeout in seconds</span>
-</span><span id="UDP-167"><a href="#UDP-167"><span class="linenos">167</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="UDP-168"><a href="#UDP-168"><span class="linenos">168</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rx</span><span class="o">.</span><span class="n">recvDict</span><span class="p">(</span><span class="n">bufsize</span><span class="o">=</span><span class="n">bufsize</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
-</span><span id="UDP-169"><a href="#UDP-169"><span class="linenos">169</span></a>    
-</span><span id="UDP-170"><a href="#UDP-170"><span class="linenos">170</span></a>    <span class="k">def</span> <span class="nf">sendDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-</span><span id="UDP-171"><a href="#UDP-171"><span class="linenos">171</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="UDP-172"><a href="#UDP-172"><span class="linenos">172</span></a><span class="sd">        Serialize a python dictionary and send it.</span>
-</span><span id="UDP-173"><a href="#UDP-173"><span class="linenos">173</span></a><span class="sd">        </span>
-</span><span id="UDP-174"><a href="#UDP-174"><span class="linenos">174</span></a><span class="sd">        Args:</span>
-</span><span id="UDP-175"><a href="#UDP-175"><span class="linenos">175</span></a><span class="sd">            data: data to send</span>
-</span><span id="UDP-176"><a href="#UDP-176"><span class="linenos">176</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="UDP-177"><a href="#UDP-177"><span class="linenos">177</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">sendDict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="UDP-178"><a href="#UDP-178"><span class="linenos">178</span></a>
-</span><span id="UDP-179"><a href="#UDP-179"><span class="linenos">179</span></a>    <span class="k">def</span> <span class="nf">recvNumpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bufsize</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="UDP-180"><a href="#UDP-180"><span class="linenos">180</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="UDP-181"><a href="#UDP-181"><span class="linenos">181</span></a><span class="sd">        Receive data and deserialize it into a numpy array.</span>
-</span><span id="UDP-182"><a href="#UDP-182"><span class="linenos">182</span></a><span class="sd">        </span>
-</span><span id="UDP-183"><a href="#UDP-183"><span class="linenos">183</span></a><span class="sd">        See `recv()` for more information on timeout.</span>
-</span><span id="UDP-184"><a href="#UDP-184"><span class="linenos">184</span></a><span class="sd">        </span>
-</span><span id="UDP-185"><a href="#UDP-185"><span class="linenos">185</span></a><span class="sd">        Args:</span>
-</span><span id="UDP-186"><a href="#UDP-186"><span class="linenos">186</span></a><span class="sd">            bufsize: size of data buffer to receive</span>
-</span><span id="UDP-187"><a href="#UDP-187"><span class="linenos">187</span></a><span class="sd">            dtype: numpy data type</span>
-</span><span id="UDP-188"><a href="#UDP-188"><span class="linenos">188</span></a><span class="sd">            timeout: timeout in seconds</span>
-</span><span id="UDP-189"><a href="#UDP-189"><span class="linenos">189</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="UDP-190"><a href="#UDP-190"><span class="linenos">190</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rx</span><span class="o">.</span><span class="n">recvNumpy</span><span class="p">(</span><span class="n">bufsize</span><span class="o">=</span><span class="n">bufsize</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
-</span><span id="UDP-191"><a href="#UDP-191"><span class="linenos">191</span></a>
-</span><span id="UDP-192"><a href="#UDP-192"><span class="linenos">192</span></a>    <span class="k">def</span> <span class="nf">sendNumpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-</span><span id="UDP-193"><a href="#UDP-193"><span class="linenos">193</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="UDP-194"><a href="#UDP-194"><span class="linenos">194</span></a><span class="sd">        Serialize a numpy array and send it.</span>
-</span><span id="UDP-195"><a href="#UDP-195"><span class="linenos">195</span></a><span class="sd">        </span>
-</span><span id="UDP-196"><a href="#UDP-196"><span class="linenos">196</span></a><span class="sd">        Args:</span>
-</span><span id="UDP-197"><a href="#UDP-197"><span class="linenos">197</span></a><span class="sd">            data: data to send</span>
-</span><span id="UDP-198"><a href="#UDP-198"><span class="linenos">198</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="UDP-199"><a href="#UDP-199"><span class="linenos">199</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">sendNumpy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="UDP-152"><a href="#UDP-152"><span class="linenos">152</span></a>        <span class="n">UDPRx</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="n">recv_addr</span><span class="p">)</span>
+</span><span id="UDP-153"><a href="#UDP-153"><span class="linenos">153</span></a>        <span class="n">UDPTx</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="n">send_addr</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -972,11 +862,8 @@ timeout &gt; 0: blocking for timeout seconds</p>
 </span><span id="UDP.__init__-149"><a href="#UDP.__init__-149"><span class="linenos">149</span></a><span class="sd">            recv_addr: address to listen on</span>
 </span><span id="UDP.__init__-150"><a href="#UDP.__init__-150"><span class="linenos">150</span></a><span class="sd">            send_addr: address of target host</span>
 </span><span id="UDP.__init__-151"><a href="#UDP.__init__-151"><span class="linenos">151</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="UDP.__init__-152"><a href="#UDP.__init__-152"><span class="linenos">152</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span> <span class="o">=</span> <span class="n">UDPTx</span><span class="p">(</span><span class="n">send_addr</span><span class="p">)</span>
-</span><span id="UDP.__init__-153"><a href="#UDP.__init__-153"><span class="linenos">153</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rx</span> <span class="o">=</span> <span class="n">UDPRx</span><span class="p">(</span><span class="n">recv_addr</span><span class="p">)</span>
-</span><span id="UDP.__init__-154"><a href="#UDP.__init__-154"><span class="linenos">154</span></a>
-</span><span id="UDP.__init__-155"><a href="#UDP.__init__-155"><span class="linenos">155</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">_sock</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-</span><span id="UDP.__init__-156"><a href="#UDP.__init__-156"><span class="linenos">156</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rx</span><span class="o">.</span><span class="n">_sock</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+</span><span id="UDP.__init__-152"><a href="#UDP.__init__-152"><span class="linenos">152</span></a>        <span class="n">UDPRx</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="n">recv_addr</span><span class="p">)</span>
+</span><span id="UDP.__init__-153"><a href="#UDP.__init__-153"><span class="linenos">153</span></a>        <span class="n">UDPTx</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="n">send_addr</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -992,173 +879,24 @@ timeout &gt; 0: blocking for timeout seconds</p>
 
 
                             </div>
-                            <div id="UDP.tx" class="classattr">
-                                <div class="attr variable">
-            <span class="name">tx</span>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#UDPTx">UDPTx</a></dt>
+                                <dd id="UDP.addr" class="variable"><a href="#UDPTx.addr">addr</a></dd>
+                <dd id="UDP.stop" class="function"><a href="#UDPTx.stop">stop</a></dd>
+                <dd id="UDP.send" class="function"><a href="#UDPTx.send">send</a></dd>
+                <dd id="UDP.sendDict" class="function"><a href="#UDPTx.sendDict">sendDict</a></dd>
+                <dd id="UDP.sendNumpy" class="function"><a href="#UDPTx.sendNumpy">sendNumpy</a></dd>
 
-        
-    </div>
-    <a class="headerlink" href="#UDP.tx"></a>
-    
-    
+            </div>
+            <div><dt><a href="#UDPRx">UDPRx</a></dt>
+                                <dd id="UDP.recv" class="function"><a href="#UDPRx.recv">recv</a></dd>
+                <dd id="UDP.recvDict" class="function"><a href="#UDPRx.recvDict">recvDict</a></dd>
+                <dd id="UDP.recvNumpy" class="function"><a href="#UDPRx.recvNumpy">recvNumpy</a></dd>
 
-                            </div>
-                            <div id="UDP.rx" class="classattr">
-                                <div class="attr variable">
-            <span class="name">rx</span>
-
-        
-    </div>
-    <a class="headerlink" href="#UDP.rx"></a>
-    
-    
-
-                            </div>
-                            <div id="UDP.recvDict" class="classattr">
-                                        <input id="UDP.recvDict-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">recvDict</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">bufsize</span><span class="o">=</span><span class="mi">1024</span>, </span><span class="param"><span class="n">timeout</span><span class="o">=</span><span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">dict</span>:</span></span>
-
-                <label class="view-source-button" for="UDP.recvDict-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#UDP.recvDict"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="UDP.recvDict-158"><a href="#UDP.recvDict-158"><span class="linenos">158</span></a>    <span class="k">def</span> <span class="nf">recvDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bufsize</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="UDP.recvDict-159"><a href="#UDP.recvDict-159"><span class="linenos">159</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="UDP.recvDict-160"><a href="#UDP.recvDict-160"><span class="linenos">160</span></a><span class="sd">        Receive data and deserialize it into a python dictionary.</span>
-</span><span id="UDP.recvDict-161"><a href="#UDP.recvDict-161"><span class="linenos">161</span></a><span class="sd">        </span>
-</span><span id="UDP.recvDict-162"><a href="#UDP.recvDict-162"><span class="linenos">162</span></a><span class="sd">        See `recv()` for more information on timeout.</span>
-</span><span id="UDP.recvDict-163"><a href="#UDP.recvDict-163"><span class="linenos">163</span></a><span class="sd">        </span>
-</span><span id="UDP.recvDict-164"><a href="#UDP.recvDict-164"><span class="linenos">164</span></a><span class="sd">        Args:</span>
-</span><span id="UDP.recvDict-165"><a href="#UDP.recvDict-165"><span class="linenos">165</span></a><span class="sd">            bufsize: size of data buffer to receive</span>
-</span><span id="UDP.recvDict-166"><a href="#UDP.recvDict-166"><span class="linenos">166</span></a><span class="sd">            timeout: timeout in seconds</span>
-</span><span id="UDP.recvDict-167"><a href="#UDP.recvDict-167"><span class="linenos">167</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="UDP.recvDict-168"><a href="#UDP.recvDict-168"><span class="linenos">168</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rx</span><span class="o">.</span><span class="n">recvDict</span><span class="p">(</span><span class="n">bufsize</span><span class="o">=</span><span class="n">bufsize</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Receive data and deserialize it into a python dictionary.</p>
-
-<p>See <code>recv()</code> for more information on timeout.</p>
-
-<h6 id="arguments">Arguments:</h6>
-
-<ul>
-<li><strong>bufsize:</strong>  size of data buffer to receive</li>
-<li><strong>timeout:</strong>  timeout in seconds</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="UDP.sendDict" class="classattr">
-                                        <input id="UDP.sendDict-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">sendDict</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="UDP.sendDict-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#UDP.sendDict"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="UDP.sendDict-170"><a href="#UDP.sendDict-170"><span class="linenos">170</span></a>    <span class="k">def</span> <span class="nf">sendDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-</span><span id="UDP.sendDict-171"><a href="#UDP.sendDict-171"><span class="linenos">171</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="UDP.sendDict-172"><a href="#UDP.sendDict-172"><span class="linenos">172</span></a><span class="sd">        Serialize a python dictionary and send it.</span>
-</span><span id="UDP.sendDict-173"><a href="#UDP.sendDict-173"><span class="linenos">173</span></a><span class="sd">        </span>
-</span><span id="UDP.sendDict-174"><a href="#UDP.sendDict-174"><span class="linenos">174</span></a><span class="sd">        Args:</span>
-</span><span id="UDP.sendDict-175"><a href="#UDP.sendDict-175"><span class="linenos">175</span></a><span class="sd">            data: data to send</span>
-</span><span id="UDP.sendDict-176"><a href="#UDP.sendDict-176"><span class="linenos">176</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="UDP.sendDict-177"><a href="#UDP.sendDict-177"><span class="linenos">177</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">sendDict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Serialize a python dictionary and send it.</p>
-
-<h6 id="arguments">Arguments:</h6>
-
-<ul>
-<li><strong>data:</strong>  data to send</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="UDP.recvNumpy" class="classattr">
-                                        <input id="UDP.recvNumpy-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">recvNumpy</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">bufsize</span><span class="o">=</span><span class="mi">1024</span>,</span><span class="param">	dtype=&lt;class &#x27;numpy.float32&#x27;&gt;,</span><span class="param">	<span class="n">timeout</span><span class="o">=</span><span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>:</span></span>
-
-                <label class="view-source-button" for="UDP.recvNumpy-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#UDP.recvNumpy"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="UDP.recvNumpy-179"><a href="#UDP.recvNumpy-179"><span class="linenos">179</span></a>    <span class="k">def</span> <span class="nf">recvNumpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bufsize</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="UDP.recvNumpy-180"><a href="#UDP.recvNumpy-180"><span class="linenos">180</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="UDP.recvNumpy-181"><a href="#UDP.recvNumpy-181"><span class="linenos">181</span></a><span class="sd">        Receive data and deserialize it into a numpy array.</span>
-</span><span id="UDP.recvNumpy-182"><a href="#UDP.recvNumpy-182"><span class="linenos">182</span></a><span class="sd">        </span>
-</span><span id="UDP.recvNumpy-183"><a href="#UDP.recvNumpy-183"><span class="linenos">183</span></a><span class="sd">        See `recv()` for more information on timeout.</span>
-</span><span id="UDP.recvNumpy-184"><a href="#UDP.recvNumpy-184"><span class="linenos">184</span></a><span class="sd">        </span>
-</span><span id="UDP.recvNumpy-185"><a href="#UDP.recvNumpy-185"><span class="linenos">185</span></a><span class="sd">        Args:</span>
-</span><span id="UDP.recvNumpy-186"><a href="#UDP.recvNumpy-186"><span class="linenos">186</span></a><span class="sd">            bufsize: size of data buffer to receive</span>
-</span><span id="UDP.recvNumpy-187"><a href="#UDP.recvNumpy-187"><span class="linenos">187</span></a><span class="sd">            dtype: numpy data type</span>
-</span><span id="UDP.recvNumpy-188"><a href="#UDP.recvNumpy-188"><span class="linenos">188</span></a><span class="sd">            timeout: timeout in seconds</span>
-</span><span id="UDP.recvNumpy-189"><a href="#UDP.recvNumpy-189"><span class="linenos">189</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="UDP.recvNumpy-190"><a href="#UDP.recvNumpy-190"><span class="linenos">190</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rx</span><span class="o">.</span><span class="n">recvNumpy</span><span class="p">(</span><span class="n">bufsize</span><span class="o">=</span><span class="n">bufsize</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Receive data and deserialize it into a numpy array.</p>
-
-<p>See <code>recv()</code> for more information on timeout.</p>
-
-<h6 id="arguments">Arguments:</h6>
-
-<ul>
-<li><strong>bufsize:</strong>  size of data buffer to receive</li>
-<li><strong>dtype:</strong>  numpy data type</li>
-<li><strong>timeout:</strong>  timeout in seconds</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="UDP.sendNumpy" class="classattr">
-                                        <input id="UDP.sendNumpy-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">sendNumpy</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="UDP.sendNumpy-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#UDP.sendNumpy"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="UDP.sendNumpy-192"><a href="#UDP.sendNumpy-192"><span class="linenos">192</span></a>    <span class="k">def</span> <span class="nf">sendNumpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-</span><span id="UDP.sendNumpy-193"><a href="#UDP.sendNumpy-193"><span class="linenos">193</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="UDP.sendNumpy-194"><a href="#UDP.sendNumpy-194"><span class="linenos">194</span></a><span class="sd">        Serialize a numpy array and send it.</span>
-</span><span id="UDP.sendNumpy-195"><a href="#UDP.sendNumpy-195"><span class="linenos">195</span></a><span class="sd">        </span>
-</span><span id="UDP.sendNumpy-196"><a href="#UDP.sendNumpy-196"><span class="linenos">196</span></a><span class="sd">        Args:</span>
-</span><span id="UDP.sendNumpy-197"><a href="#UDP.sendNumpy-197"><span class="linenos">197</span></a><span class="sd">            data: data to send</span>
-</span><span id="UDP.sendNumpy-198"><a href="#UDP.sendNumpy-198"><span class="linenos">198</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="UDP.sendNumpy-199"><a href="#UDP.sendNumpy-199"><span class="linenos">199</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">sendNumpy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Serialize a numpy array and send it.</p>
-
-<h6 id="arguments">Arguments:</h6>
-
-<ul>
-<li><strong>data:</strong>  data to send</li>
-</ul>
-</div>
-
-
+            </div>
+                                </dl>
                             </div>
                 </section>
     </main>
