@@ -136,7 +136,7 @@ class UDPTx:
         self.send(buffer)
 
 
-class UDP:
+class UDP(UDPTx, UDPRx):
     """
     UDP class for sending and receiving data from a UDP socket.
     """
@@ -148,51 +148,5 @@ class UDP:
             recv_addr: address to listen on
             send_addr: address of target host
         """
-        self.tx = UDPTx(send_addr)
-        self.rx = UDPRx(recv_addr)
-
-        self.tx._sock.settimeout(0.1)
-        self.rx._sock.settimeout(0.1)
-    
-    def recvDict(self, bufsize=1024, timeout=None) -> dict:
-        """
-        Receive data and deserialize it into a python dictionary.
-        
-        See `recv()` for more information on timeout.
-        
-        Args:
-            bufsize: size of data buffer to receive
-            timeout: timeout in seconds
-        """
-        return self.rx.recvDict(bufsize=bufsize, timeout=timeout)
-    
-    def sendDict(self, data: dict):
-        """
-        Serialize a python dictionary and send it.
-        
-        Args:
-            data: data to send
-        """
-        self.tx.sendDict(data)
-
-    def recvNumpy(self, bufsize=1024, dtype=np.float32, timeout=None) -> np.ndarray:
-        """
-        Receive data and deserialize it into a numpy array.
-        
-        See `recv()` for more information on timeout.
-        
-        Args:
-            bufsize: size of data buffer to receive
-            dtype: numpy data type
-            timeout: timeout in seconds
-        """
-        return self.rx.recvNumpy(bufsize=bufsize, dtype=dtype, timeout=timeout)
-
-    def sendNumpy(self, data: np.ndarray):
-        """
-        Serialize a numpy array and send it.
-        
-        Args:
-            data: data to send
-        """
-        self.tx.sendNumpy(data)
+        UDPRx.__init__(self, addr=recv_addr)
+        UDPTx.__init__(self, addr=send_addr)
