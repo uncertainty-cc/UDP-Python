@@ -47,7 +47,7 @@ class UDPRx:
             return None
         return buffer
 
-    def recvDict(self, bufsize=1024, timeout=None) -> dict:
+    def recv_dict(self, bufsize=1024, timeout=None) -> dict:
         """
         Receive data and deserialize it into a python dictionary.
 
@@ -64,7 +64,7 @@ class UDPRx:
         data = json.loads(serialized_data)
         return data
     
-    def recvNumpy(self, bufsize=1024, dtype=np.float32, timeout=None) -> np.ndarray:
+    def recv_numpy(self, bufsize=1024, dtype=np.float32, timeout=None) -> np.ndarray:
         """
         Receive data and deserialize it into a numpy array.
         
@@ -114,7 +114,7 @@ class UDPTx:
         """
         self._sock.sendto(buffer, self.addr)
 
-    def sendDict(self, data: dict):
+    def send_dict(self, data: dict):
         """
         Serialize a python dictionary and send it.
         
@@ -125,7 +125,7 @@ class UDPTx:
         buffer = buffer.encode()
         self.send(buffer)
 
-    def sendNumpy(self, data: np.ndarray):
+    def send_numpy(self, data: np.ndarray):
         """
         Serialize a numpy array and send it.
         
