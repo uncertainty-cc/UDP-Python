@@ -22,7 +22,7 @@ class UDPRx:
         self._sock.bind(self.addr)
         print("UDP Rx is initialized:", self.addr)
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Close the socket.
         """
@@ -99,13 +99,13 @@ class UDPTx:
         
         print("UDP Tx is initialized:", self.addr)
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Close the socket.
         """
         self._sock.close()
 
-    def send(self, buffer):
+    def send(self, buffer: bytes) -> None:
         """
         Send data
         
@@ -114,7 +114,7 @@ class UDPTx:
         """
         self._sock.sendto(buffer, self.addr)
 
-    def send_dict(self, data: dict):
+    def send_dict(self, data: dict) -> None:
         """
         Serialize a python dictionary and send it.
         
@@ -125,7 +125,7 @@ class UDPTx:
         buffer = buffer.encode()
         self.send(buffer)
 
-    def send_numpy(self, data: np.ndarray):
+    def send_numpy(self, data: np.ndarray) -> None:
         """
         Serialize a numpy array and send it.
         
