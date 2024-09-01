@@ -25,6 +25,6 @@ setup(
         "cc-serializer",
     ],
     package_dir={"": "src/"},
-    packages=find_namespace_packages(where="src/", include=["cc.scpi"]),
+    packages=find_namespace_packages(where="src/", include=["cc.udp"]),
     python_requires=">=3.8",
 )
