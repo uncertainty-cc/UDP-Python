@@ -4,23 +4,29 @@ import json
 import numpy as np
 
 
-class UDPRx:
+class UDP:
     """
-    UDP Rx class for receiving data from a UDP socket.
+    UDP class for sending and receiving data from a UDP socket as a full duplex communcation channel.
     """
-    def __init__(self, addr=("0.0.0.0", 8000)):
+    def __init__(self, recv_addr=("127.0.0.1", 8000), send_addr=("127.0.0.1", 8001)):
         """
-        Initialize UDP Rx
-
+        Initialize UDP Tx and Rx
+        
         Args:
-            addr: address to listen on
+            recv_addr: address to listen on, None if not receiving (tx only)
+            send_addr: address of target host, None if not sending (rx only)
         """
-        self.addr = addr
+        self.recv_addr = recv_addr
+        self.send_addr = send_addr
         
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
-        self._sock.bind(self.addr)
-        print("UDP Rx is initialized:", self.addr)
+        if self.recv_addr:
+            self._sock.bind(self.recv_addr)
+            print("UDP Rx is initialized:", self.recv_addr)
+        
+        if self.send_addr:
+            print("UDP Tx is initialized:", self.send_addr)
 
     def stop(self) -> None:
         """
@@ -40,12 +46,25 @@ class UDPRx:
             bufsize: size of data buffer to receive
             timeout: timeout in seconds
         """
+        if not self.recv_addr:
+            raise ValueError("Cannot receive data without a receive address")
         self._sock.settimeout(timeout)
         try:
             buffer, addr = self._sock.recvfrom(bufsize)
         except (socket.timeout, BlockingIOError):
             return None
         return buffer
+
+    def send(self, buffer: bytes) -> None:
+        """
+        Send a byte buffer to the target device.
+        
+        Args:
+            buffer: data to send
+        """
+        if not self.send_addr:
+            raise ValueError("Cannot send data without a send address")
+        self._sock.sendto(buffer, self.send_addr)
 
     def recv_dict(self, bufsize=1024, timeout=None) -> dict:
         """
@@ -64,6 +83,17 @@ class UDPRx:
         data = json.loads(serialized_data)
         return data
     
+    def send_dict(self, data: dict) -> None:
+        """
+        Serialize a python dictionary and send it.
+        
+        Args:
+            data: data to send
+        """
+        buffer = json.dumps(data)
+        buffer = buffer.encode()
+        self.send(buffer)
+
     def recv_numpy(self, bufsize=1024, dtype=np.float32, timeout=None) -> np.ndarray:
         """
         Receive data and deserialize it into a numpy array.
@@ -81,50 +111,6 @@ class UDPRx:
         data = np.frombuffer(buffer, dtype=dtype)
         return data
 
-
-class UDPTx:
-    """
-    UDP Tx class for sending data to a UDP socket.
-    """
-    def __init__(self, addr=("0.0.0.0", 8000)):
-        """
-        Initialize UDP Tx
-
-        Args:
-            addr: address of target host
-        """
-        self.addr = addr
-        
-        self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        
-        print("UDP Tx is initialized:", self.addr)
-
-    def stop(self) -> None:
-        """
-        Close the socket.
-        """
-        self._sock.close()
-
-    def send(self, buffer: bytes) -> None:
-        """
-        Send data
-        
-        Args:
-            buffer: data to send
-        """
-        self._sock.sendto(buffer, self.addr)
-
-    def send_dict(self, data: dict) -> None:
-        """
-        Serialize a python dictionary and send it.
-        
-        Args:
-            data: data to send
-        """
-        buffer = json.dumps(data)
-        buffer = buffer.encode()
-        self.send(buffer)
-
     def send_numpy(self, data: np.ndarray) -> None:
         """
         Serialize a numpy array and send it.
@@ -134,19 +120,3 @@ class UDPTx:
         """
         buffer = data.tobytes()
         self.send(buffer)
-
-
-class UDP(UDPTx, UDPRx):
-    """
-    UDP class for sending and receiving data from a UDP socket.
-    """
-    def __init__(self, recv_addr, send_addr):
-        """
-        Initialize UDP Tx and Rx
-        
-        Args:
-            recv_addr: address to listen on
-            send_addr: address of target host
-        """
-        UDPRx.__init__(self, addr=recv_addr)
-        UDPTx.__init__(self, addr=send_addr)
